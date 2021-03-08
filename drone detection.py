@@ -2,10 +2,11 @@ import cv2
 import numpy as np
 import pandas as pd
 import os
-from sklearn.linear_model import LogisticRegression
+from sklearn.neural_network import MLPClassifier
+from sklearn.preprocessing import StandardScaler
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
-
+from sklearn.metrics import classification_report
 
 ls = list()
 
@@ -28,14 +29,18 @@ for filename in os.listdir(neg_fold):
 x = np.array(ls)
 y = np.array(len(os.listdir(pos_fold)) * [1] + len(os.listdir(neg_fold)) * [0]).reshape(-1, 1)
 
-#print(len(x), len(y), sep='\n')
-
 x_train, x_test, y_train, y_test = train_test_split(x, y, test_size=0.25)
 
-lr = LogisticRegression(random_state=0, max_iter=200)
+scaler = StandardScaler()
+scaler.fit(x_train)
 
-lr.fit(x_train, y_train.ravel())  # requires 1-D array
-y_pred = lr.predict(x_test)
+x_train = scaler.transform(x_train)
+x_test = scaler.transform(x_test)
+
+mlp = MLPClassifier(hidden_layer_sizes=(5, 5), max_iter=5000)
+mlp.fit(x_train, y_train.ravel())
+
+y_pred = mlp.predict(x_test)
 
 z = pd.concat([pd.DataFrame(y_test), pd.DataFrame(y_pred)], axis=1)
 z.columns = ['True', 'Prediction']
@@ -44,3 +49,5 @@ print(z)
 accuracy = accuracy_score(y_test, y_pred)
 
 print("Tahminin Doğruluk Oranı: %", accuracy*100)
+
+print(classification_report(y_test, y_pred))
