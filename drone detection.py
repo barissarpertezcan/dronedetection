@@ -11,8 +11,8 @@ from sklearn.metrics import classification_report
 ls = list()
 
 #print(os.path.dirname(os.path.realpath(__file__)))
-pos_fold = "C:/Users/Sarper/Desktop/software/Machine Learning/Odevler/week-3/drone_pics"
-neg_fold = "C:/Users/Sarper/Desktop/software/Machine Learning/Odevler/week-3/other_pics"
+pos_fold = "C:/Users/Sarper/Desktop/software/drone_pics"
+neg_fold = "C:/Users/Sarper/Desktop/software/other_pics"
 
 for filename in os.listdir(pos_fold):
     img = cv2.imread(os.path.join(pos_fold, filename), 0)
